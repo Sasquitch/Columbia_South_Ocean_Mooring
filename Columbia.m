@@ -1,16 +1,19 @@
 %Columbia Data
-workspace;
-ncid = netcdf.create('columbia.nc', 'NC_WRITE');
-
+workspace; %open workspace
 d1 = m(1).d;
 times = d1.p24perDay0000start;
+%for number of entries in m
+%for number of entries underneath m
+
+filename = d1(1,1).moorID; %name file moorID entry TODO change y to entry underneath m
+ncid = netcdf.create(filename, 'NC_WRITE');
 
 [timex,timesy] = size(times);
-timeDimID = netcdf.defDim(ncid,'time',timesy);
+timeDimID = netcdf.defDim(ncid,'time',timesy); %create dimension with len time
 
 type1 = d1.type;
 [lenx,leny] = size(type1);
-timeseriesDimID = netcdf.defDim(ncid,'timeseries',leny);
+timeseriesDimID = netcdf.defDim(ncid,'timeseries',leny); %dim of number of sensors for that year
 
 latitude = d1.lt;
 lat_id = netcdf.defVar(ncid,'lat','float',timeseriesDimID);
@@ -56,8 +59,28 @@ netcdf.putAtt(ncid,varid,'publisher_name','US National Centers for Environmental
 netcdf.putAtt(ncid,varid,'publisher_email','ncei.info@noaa.gov');
 netcdf.putAtt(ncid,varid,'publisher_url','https://www.ncei.noaa.gov');
 
+mlTimes = {times.dn};
+mlPress = {times.pr};
+mlTemp = {times.te};
+mlSal = {times.sa};
+
+%class(mlPress)
+%mlPressSeries = timeseries(mlPress);
+%mlPressSeries(mlPress)
+%times(1).pr';
+
+for c = 1:timesy
+    mlPressArr(c,:) = times(c).pr';
+    mlTempArr(c,:) = times(c).te';
+    mlSalArr(c,:) = times(c).sa';
+end
+
+mlPressSeries = timeseries(mlPressArr,mlTimes,'Name','pressureTS')
+mlTempSeries = timeseries(mlTempArr,mlTimes,'Name','temperatureTS')
+mlSalSeries = timeseries(mlSalArr,mlTimes,'Name','SalinityTS')
+
 netcdf.endDef (ncid);
-%Assign all data to Variables
+%Assign all labels to Variables
 netcdf.putVar (ncid, lat_id, latArr);
 netcdf.putVar (ncid, lon_id, lonArr);
 netcdf.putVar (ncid, depth_id, depthArr);
