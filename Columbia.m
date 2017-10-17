@@ -111,7 +111,7 @@ while mLoop < lenmY %Loop down the rows in m
         netcdf.putAtt(ncid,varid,'ncei_template_version','NCEI_TimeSeries_Orthogonal');
         netcdf.putAtt(ncid,varid,'featureType','TimeSeries');
         netcdf.putAtt(ncid,varid,'Year', d1.year);
-        netcdf.putAtt(ncid,varid,'Conventions','CF-1.4');
+        netcdf.putAtt(ncid,varid,'Conventions','CF-1.6');
         netcdf.putAtt(ncid,varid,'naming_authority','edu.columbia.ldeo');
         currTime = ['File Created on ' datestr(now)];
         netcdf.putAtt(ncid,varid,'date_created',currTime);
